@@ -21,7 +21,7 @@ The production build is a static export in `out/`. The preview listens on port 3
 
 ## Vercel handoff
 
-Import this directory as a Vercel project or push it to your chosen repository and import the repository. `vercel.json` sets the Next.js framework, frozen dependency installation, build command, and `out` output folder. No database or secret is required for this version.
+Import this directory as a Vercel project or push it to your chosen repository and import the repository. `vercel.json` sets the Next.js framework, frozen dependency installation, and build command. Leave the Vercel dashboard's Output Directory override OFF so its Next.js integration uses the framework default. Do not set that override to `out`: the integration reads build manifests from `.next`, then handles the static export declared by `next.config.ts`. The `out/` directory remains correct for generic static hosts and the Manus static publication settings, but is not the Vercel Next.js adapter's manifest directory. No database or secret is required for this version.
 
 Set `NEXT_PUBLIC_SITE_URL` to the approved final HTTPS origin at build time. Once the domain cutover is approved, that can be `https://thefoleycollective.com`. This activates canonical URLs, absolute social metadata, sitemap URLs, and indexable robots behavior. Without a configured origin, this preview intentionally disallows crawling and omits guessed canonical addresses.
 
