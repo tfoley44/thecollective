@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const config: NextConfig = {
   output: "export",
+  distDir: ".next",
   trailingSlash: true,
   images: { unoptimized: true },
   poweredByHeader: false,
