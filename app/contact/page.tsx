@@ -24,10 +24,10 @@ export default function ContactPage() {
           You don’t need all the answers. Tell us what you’re thinking, and
           we’ll work out the next step together.
         </p>
-        <a className="contact-email" href={`mailto:${contactEmail}`}>
+        <span className="contact-email">
           {contactEmail}
           <ArrowUpRight size={18} />
-        </a>
+        </span>
         <div className="what-next">
           <h3>What happens next?</h3>
           <p>

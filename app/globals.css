@@ -2329,3 +2329,26 @@ select:focus {
     display: none;
   }
 }
+
+/* Website-sent inquiry states. */
+.inquiry-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.inquiry-error {
+  padding: 14px 16px;
+  border: 1px solid #dcb3ab;
+  border-radius: 10px;
+  background: #fff4f0;
+  color: #7b3024;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.inquiry-success > p {
+  line-height: 1.7;
+  margin-bottom: 20px;
+}

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
     "build": "next build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "start": "next start --hostname 0.0.0.0 --port 3000",
+    "test": "node --test tests/inquiry.test.mjs"
   },
   "dependencies": {
     "next": "^15.5.12",

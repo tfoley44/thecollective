@@ -4,24 +4,26 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const config = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
-
 if (config.framework !== "nextjs" || config.outputDirectory !== ".next") {
   throw new Error(
-    "Foley deployment configuration is stale. Deploy the V2 vercel.json with framework=nextjs and outputDirectory=.next.",
+    "Deploy the current vercel.json with framework=nextjs and outputDirectory=.next.",
   );
 }
-
-const manifestPath = join(root, ".next", "routes-manifest.json");
-if (!existsSync(manifestPath)) {
-  throw new Error(
-    "Next.js did not produce .next/routes-manifest.json. Review the next build errors; do not use out as the Next.js build directory.",
-  );
-}
-JSON.parse(readFileSync(manifestPath, "utf8"));
-
-if (!existsSync(join(root, "out", "index.html"))) {
-  throw new Error("The static export is missing out/index.html.");
-}
-
-console.log("FOLEY_VERCEL_FIX_V2: outputDirectory=.next; routing manifest verified.");
-console.log("Static export verified separately at out/index.html.");
+const manifest = join(root, ".next", "routes-manifest.json");
+if (!existsSync(manifest))
+  throw new Error("Next.js did not produce .next/routes-manifest.json.");
+JSON.parse(readFileSync(manifest, "utf8"));
+const paths = JSON.parse(
+  readFileSync(
+    join(root, ".next", "server", "app-paths-manifest.json"),
+    "utf8",
+  ),
+);
+if (!paths["/api/inquiries/route"])
+  throw new Error("The server-side inquiry route was not compiled.");
+console.log(
+  "FOLEY_VERCEL_FIX_V2: outputDirectory=.next; routing manifest verified.",
+);
+console.log(
+  "FOLEY_WEBSITE_EMAIL_V3: server-side inquiry endpoint compiled; runtime email credentials required.",
+);

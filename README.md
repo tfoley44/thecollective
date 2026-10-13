@@ -1,10 +1,10 @@
 # The Foley Collective — App Development
 
-A clean, light, minimal Next.js 15 / React 19 / Tailwind CSS 4 marketing website. The first version includes a homepage, project inquiry page, and privacy notice. Homepage sections: hero, product capabilities, strategy/design/development/launch services, process, about the collective, FAQ, and closing inquiry CTA.
+A clean, light, minimal Next.js 15 / React 19 / Tailwind CSS 4 marketing website. Pages: homepage, project inquiry page, and privacy notice. Homepage sections cover capabilities, app strategy/design/development/launch, process, the collective, FAQ, and inquiry CTAs.
 
 ## Run locally
 
-Node.js 22 and pnpm 11.25.0 are used. The package manager and lockfile are pinned.
+Use Node.js 22 and pnpm 11.25.0. The package manager and lockfile are pinned.
 
 ```sh
 npm install -g pnpm@11.25.0
@@ -14,48 +14,48 @@ pnpm dev
 
 ```sh
 pnpm build
+node scripts/verify-vercel-build.mjs
 pnpm typecheck
+node --test tests/inquiry.test.mjs
 ```
 
-The production build is a static export in `out/`. The preview listens on port 3000. Original supplied logos are preserved in the separate legacy vault; the web logo is a transparent crop from the supplied PDF. Fonts are self-hosted DM Sans and Instrument Serif from Google Fonts.
+The current V3 uses normal Next.js server hosting. It is **not a static export**: `/api/inquiries/` requires a server. Keep `distDir: ".next"` in `next.config.ts` and `outputDirectory: ".next"` in `vercel.json`. The previously successful V2 output-directory correction is retained. Do not publish the old `out/` folder for V3, since it cannot run the email endpoint.
 
 ## Vercel handoff
 
-Import this directory as a Vercel project or push it to your chosen repository and import the repository. V2 explicitly sets `outputDirectory: ".next"` in `vercel.json` and `distDir: ".next"` in `next.config.ts`, so the file-level setting overrides an old Vercel dashboard value of `out`. It retains the Next.js framework preset and frozen dependency installation. Its build command runs `pnpm build` and `scripts/verify-vercel-build.mjs`; successful logs include `FOLEY_VERCEL_FIX_V2: outputDirectory=.next; routing manifest verified.` The `out/` directory still contains the static website for generic static hosts and Manus; it is not the Vercel Next.js adapter's manifest directory. No database or secret is required for this version.
+Deploy the folder containing `package.json`, `vercel.json`, `scripts/`, `app/`, and `lib/`. Select Next.js. The included `vercel.json` installs frozen dependencies, runs the build and manifest verification, and explicitly overrides the output directory to `.next`. Its logs include the retained `FOLEY_VERCEL_FIX_V2` marker and a new `FOLEY_WEBSITE_EMAIL_V3` marker for the compiled API endpoint.
 
-Deploy the V2 source files in the directory Vercel uses as its project Root Directory—the folder containing `package.json`, `vercel.json`, and `scripts/`. The V2 ZIP has those files at its root. Commit the new files and deploy that latest commit; redeploying an earlier failed commit cannot load these changes. Do not copy `routes-manifest.json` into `out`. If logs lack the V2 marker, check the deployed commit and Root Directory rather than repeatedly redeploying the same source.
+Set `NEXT_PUBLIC_SITE_URL` to the approved final HTTPS origin at build time. Configure server-only `RESEND_API_KEY` and `INQUIRY_FROM_EMAIL` as Vercel environment variables for the environments you intend to use, and redeploy after changes. Do not put the API key in a `NEXT_PUBLIC_` variable, source code, a ZIP, or browser code. See `docs/website-email-setup.md` for exact steps.
 
-Set `NEXT_PUBLIC_SITE_URL` to the approved final HTTPS origin at build time. Once the domain cutover is approved, that can be `https://thefoleycollective.com`. This activates canonical URLs, absolute social metadata, sitemap URLs, and indexable robots behavior. Without a configured origin, this preview intentionally disallows crawling and omits guessed canonical addresses.
+The owner reported successful V2 deployment on October 12, 2026. V3 source validation is separate from live email delivery. Sending-account authorization, a verified sender, Vercel runtime settings, and a confirmed inbox receipt are required before calling the email form complete.
 
-Vercel authorization was offered but not accepted in this task. No Vercel deployment, DNS change, or replacement of the existing live site has been performed. A production cutover requires the owner's account/domain access and approval of the final site. Obtain a full export from the existing website builder before cutover; preserve the old configuration and backups for rollback. Review old URLs and map only genuinely relevant URLs to the new content; retired financial pages should not be represented as app-development case studies.
+For optional Manus publication, the project uses server capability without a database and its root `Dockerfile`; `/api/health` is the unauthenticated health endpoint. Never restore the old plain-static `out` publish configuration for V3.
 
 ## Contact behavior
 
-`lib/content.ts` contains the owner-approved contact destination: `contact@thefoleycollective.com`, supplied on October 12, 2026. The contact page, privacy contact link, and inquiry draft recipient all use this shared value. This website update does not create or configure the mailbox.
+The recipient is fixed at `contact@thefoleycollective.com`. The visible address is preserved, but mailto links have been removed. “Send my inquiry” submits to a same-origin server endpoint and stays on the page. The customer email is the reply-to address, never the provider sender or arbitrary destination.
 
-The project inquiry form validates required name, email, and a 15–3,000-character idea description. It gathers product type, company, budget, and timing, then opens a mailto draft. It does not send or store an inquiry. Copy and download fallbacks appear after draft preparation. The user sends the draft from their email app. This is explicit in the UI. Connecting a form backend, CRM, or transactional email provider would be a separate enhancement; update the privacy notice when that changes.
+Both browser and server validate required fields. The endpoint limits request size, rejects cross-origin browser posts, uses a honeypot and best-effort per-instance throttling, and deduplicates retries using Resend idempotency keys. Per-instance throttling is not a distributed rate-limit guarantee; stronger production abuse protection can be added in Vercel's firewall. Automated tests mock the provider and never send live mail.
+
+Missing credentials, invalid inputs, provider rejection, or network failure never display successful submission. Input remains available after errors. Success means the email provider accepted the request, not that the recipient inbox delivered it. The website keeps no separate inquiry database and does not create a company mailbox; the privacy page describes provider and inbox handling.
 
 ## Brand direction
 
-Positioning: An independent app-development studio helping founders and businesses turn useful ideas into thoughtful digital products.
+Positioning: an independent app-development studio helping founders and businesses turn useful ideas into thoughtful digital products. Voice: clear, considered, collaborative. Core lines: “Good ideas. Great apps.” and “We turn your what-if into what’s next.” CTAs invite a conversation instead of promising a price or delivery date before scoping.
 
-Voice: clear, considered, collaborative. Headlines are short and confident; supporting copy makes the product journey understandable without jargon. Core lines: “Good ideas. Great apps.” and “We turn your what-if into what’s next.” CTAs invite a conversation instead of promising a price or delivery date before scoping.
-
-The hero uses interactive fictional product concepts, expressly labeled as illustrative. These are not client work, launched products, or performance claims. No app-development awards, testimonials, project counts, or client logos have been invented. All legacy digital-asset service copy has been excluded from the new public experience.
+Hero product concepts are clearly labeled illustrations, not client work or performance claims. No awards, testimonials, project counts, or client logos have been invented. Legacy digital-asset service copy is excluded.
 
 ## Structure
 
-- `app/`: statically generated routes, metadata, robots, sitemap, and styles.
-- `components/`: responsive header/footer, interactive concept showcase, and inquiry form.
-- `lib/content.ts`: shared copy and contact destination.
-- `public/brand/`, `public/fonts/`: web-ready supplied brand assets and self-hosted fonts.
-- `public/manus-routes.json`: complete page route manifest.
-- `docs/brand-context.md`: reviewed sources, positioning notes, and archive boundaries.
+- `app/`: public pages, SEO metadata, styles, inquiry API, and health endpoint.
+- `components/`: responsive navigation, product showcase, and inquiry UI.
+- `lib/content.ts`: shared marketing copy and displayed contact address.
+- `lib/inquiry-server.ts`: server validation, fixed recipient, and provider delivery.
+- `public/brand/`, `public/fonts/`: supplied web-ready assets and self-hosted fonts.
+- `public/manus-routes.json`: public page routes; APIs are not page routes.
+- `tests/inquiry.test.mjs`: mocked email handling checks.
+- `docs/`: brand context, historical deployment notes, and current email setup.
 
-## Legacy materials vault
+## Preserved brand and legacy files
 
-The private available-materials vault is outside this repository and the public directory. It contains all 10 supplied original logo files, accessible old public pages, text copies, downloaded referenced assets, an inventory, and checksums. It is not a complete CMS, database, campaign, or social-account backup. No original file has been deleted and the existing live website remains unchanged. See the separately delivered vault README and manifest for capture status and missing-data boundaries.
-
-## Approved coin favicon
-
-`TheTransparentCoin.png` is now preserved in the project's shared branding files and `public/brand/`. It replaces the prior favicon throughout the site via the root layout, including the browser-tab ICO/PNG variants, shortcut icon, and Apple touch icon. The platform's compact project icon uses the coin too; the horizontal header/footer wordmark is unchanged. See `docs/brand-assets.md` for sizes, cache-versioning, and preservation details. The current branding package contains the original wordmark assets, the unmodified coin, and the browser-icon variants. The historical legacy vault remains unchanged.
+The approved coin remains the site-wide browser/Apple icon and compact project mark. The horizontal wordmark is unchanged. Supplied brand originals remain in shared files and the private vault outside the repository and public directory. The vault is an available-materials capture, not a complete CMS/database/campaign backup. No original file is deleted by V3. Fonts remain self-hosted DM Sans and Instrument Serif.

@@ -2,7 +2,7 @@ import { pageMetadata } from "../../lib/metadata";
 import { contactEmail } from "../../lib/content";
 export const metadata = pageMetadata(
   "Website Privacy",
-  "How the Foley Collective marketing website handles project inquiry drafts and website information.",
+  "How the Foley Collective website handles project inquiries and website information.",
   "/privacy/",
 );
 
@@ -14,38 +14,42 @@ export default function PrivacyPage() {
       <p className="legal-date">Last updated: October 12, 2026</p>
       <h2>Project inquiries</h2>
       <p>
-        The inquiry form prepares an email draft on your device. This website
-        does not submit the form to a database or send it automatically. Your
-        name, email, company, and project information remain in the page until
-        you leave or reload it. If you choose to send the prepared draft through
-        your email app, The Foley Collective receives the information in that
-        email and uses it to respond to your inquiry.
+        When you select “Send my inquiry,” the website submits your name, email
+        address, optional company, project type, budget range, timing, and
+        project description to our server. Our email-delivery provider, Resend,
+        processes those details to send the inquiry to The Foley Collective. We
+        use the information to discuss and respond to your project. Your email
+        app is not opened.
       </p>
-      <h2>Website operation</h2>
+      <p>
+        This website does not keep a separate inquiry database. Messages may be
+        retained in our company inbox and by our email provider under its
+        retention practices. A successful submission means the email service
+        accepted the request; it is not a guarantee of inbox delivery.
+      </p>
+      <h2>Website operation and abuse prevention</h2>
       <p>
         This version does not include advertising trackers, visitor analytics,
         or an account system. The hosting provider may process technical
         information such as IP addresses and request logs to serve and protect
-        the website. Your browser and email provider have their own privacy
+        the website. The inquiry endpoint temporarily keeps a hashed network
+        identifier and request counts in server memory to limit repeated
+        submissions. Your hosting and email providers have their own privacy
         practices.
-      </p>
-      <h2>Downloads and copying</h2>
-      <p>
-        Downloading a project brief creates a text file on your device. The copy
-        action writes the prepared brief to your clipboard only when you select
-        it. Neither action uploads the brief to this website.
       </p>
       <h2>Your choices</h2>
       <p>
         Only share information needed to discuss your project. Do not include
         credentials, financial details, health records, or other sensitive
-        information in an inquiry. You can contact us about information you have
-        provided by email.
+        information. If a submission fails, your details stay in the page so you
+        can review and retry; leaving or reloading the page clears the form.
+        Contact us to discuss information you have provided or request its
+        removal.
       </p>
       <h2>Contact</h2>
       <p>
-        For website privacy questions, contact{" "}
-        <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+        For website privacy questions, write to {contactEmail}, or use the{" "}
+        <a href="/contact/">contact form</a>.
       </p>
     </article>
   );

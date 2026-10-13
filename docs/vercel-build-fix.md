@@ -1,3 +1,5 @@
+> Historical V2 deployment note. V3 website-sent inquiries use normal Next.js server hosting, not static export. Follow `website-email-setup.md` and the current README for deployment.
+
 # V2 fix: Vercel's out/routes-manifest.json error
 
 The first bundle set `outputDirectory` to `out`. The first correction removed that field, but omission can leave a project-level `out` override effective. The repeated error still shows Vercel looking in `out`, so V2 makes the build-directory choice explicit in source instead of relying on a dashboard change. The deployed repository and dashboard are not connected to this session, so their current settings and commit cannot be directly confirmed.
