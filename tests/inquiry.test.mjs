@@ -5,18 +5,20 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 
 const root = new URL("../", import.meta.url);
 const compiled = mkdtempSync(join(tmpdir(), "foley-inquiry-test-"));
 execFileSync(
   process.execPath,
   [
-    new URL("node_modules/typescript/bin/tsc", root).pathname,
-    new URL("lib/inquiry-server.ts", root).pathname,
+    fileURLToPath(new URL("node_modules/typescript/bin/tsc", root)),
+    fileURLToPath(new URL("lib/inquiry-server.ts", root)),
     "--module",
     "commonjs",
     "--target",
     "es2022",
+    "--strict",
     "--skipLibCheck",
     "--outDir",
     compiled,
@@ -26,6 +28,8 @@ execFileSync(
 const { handleInquiry, resetInquiryLimitsForTests } = createRequire(
   import.meta.url,
 )(join(compiled, "inquiry-server.js"));
+const { PROJECT_TYPES, BUDGET_RANGES, PROJECT_TIMINGS, validateInquiry } =
+  createRequire(import.meta.url)(join(compiled, "inquiry.js"));
 after(() => rmSync(compiled, { recursive: true, force: true }));
 beforeEach(resetInquiryLimitsForTests);
 
@@ -282,4 +286,69 @@ test("same-origin host survives Next.js internal URL reconstruction", async () =
     (await handleInquiry(proxied, { env: {}, fetcher: failFetch })).status,
     503,
   );
+});
+
+test("shared contract accepts every displayed project, budget, and timing option", () => {
+  for (const [key, options] of Object.entries({
+    projectType: PROJECT_TYPES,
+    budget: BUDGET_RANGES,
+    timing: PROJECT_TIMINGS,
+  })) {
+    for (const value of options)
+      assert.equal(validateInquiry({ ...fields, [key]: value }).ok, true);
+  }
+});
+
+test("validation trims fields and allows ordinary multiline descriptions", () => {
+  const result = validateInquiry({
+    ...fields,
+    name: "  Test Customer  ",
+    company: "  ",
+    message: "  A valid project description.\nA second line.  ",
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.inquiry.name, "Test Customer");
+  assert.equal(result.inquiry.company, "");
+  assert.equal(
+    result.inquiry.message,
+    "A valid project description.\nA second line.",
+  );
+});
+
+test("shared contract preserves description boundary lengths", () => {
+  for (const [length, expected] of [
+    [14, false],
+    [15, true],
+    [3000, true],
+    [3001, false],
+  ]) {
+    assert.equal(
+      validateInquiry({ ...fields, message: "x".repeat(length) }).ok,
+      expected,
+    );
+  }
+});
+
+test("non-object input and hidden-field abuse fail validation", () => {
+  for (const input of [
+    null,
+    [],
+    "text",
+    { ...fields, website: undefined },
+    { ...fields, message: fields.message + "\u0000" },
+  ]) {
+    assert.equal(validateInquiry(input).ok, false);
+  }
+});
+
+test("missing origin is denied and errors remain private and uncached", async () => {
+  const noOrigin = new Request("https://foley.example/api/inquiries/", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(fields),
+  });
+  const result = await handleInquiry(noOrigin, { env, fetcher: failFetch });
+  assert.equal(result.status, 403);
+  assert.equal(result.headers.get("cache-control"), "no-store");
+  assert.equal((await result.json()).ok, false);
 });

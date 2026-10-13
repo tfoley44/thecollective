@@ -1,10 +1,12 @@
 # Send project inquiries from the website, not Apple Mail
 
+> Current status: the existing `forms.thefoleycollective.com` sender is verified, Production variables are configured, and Resend reported a live V3 test delivered on October 12, 2026. Preserve those working settings. The steps below are for a new environment or recovery, not a requirement to recreate the domain or key. See `deployment-status.md`.
+
 The original form used a `mailto:` link. That asked the visitor's email app to prepare a message; it did not send from the website. The V3 form replaces this with a server-side submission to Resend and stays on the contact page. Messages go only to `contact@thefoleycollective.com`. You can still read and reply in Apple Mail if that is where your company inbox is configured, but visitors no longer need any email app.
 
 ## Activate the sending service
 
-Open your [Resend account](https://resend.com) and add a domain for sending. I recommend a dedicated subdomain such as `forms.thefoleycollective.com` so website sending records are separate from your existing incoming mail records. Copy the exact DNS records Resend shows for that subdomain to your DNS provider and wait until Resend marks it verified. Do not replace your root-domain MX records or delete Apple/iCloud email records. This setup sends notifications; it does not transfer your inbox to Resend. Resend requires an API key and verified sending domain. [1]
+Open your [Resend account](https://resend.com) and select the existing verified sending domain. Only add a new domain for a genuinely new setup. A dedicated subdomain such as `forms.thefoleycollective.com` keeps website sending records separate from existing incoming mail. Use the exact DNS records Resend shows and wait until verification succeeds. Do not replace root-domain MX records or remove existing email-provider records. The Foley root-domain records currently point to Google; Apple Mail can be the client without being the mail provider. This setup sends notifications; it does not transfer your inbox to Resend. [1]
 
 Create a Resend API key for sending from the verified domain. Treat it as a password. Do not send it in chat or include it in committed files.
 
@@ -39,9 +41,9 @@ If it fails, check the selected Vercel environment, redeploy after changing vari
 
 ## What is already tested, and what remains
 
-Source validation includes 15 mocked tests covering the fixed recipient, reply-to, invalid input, request size, cross-origin rejection, spam honeypot, missing credentials, provider failures, retry deduplication, and best-effort throttling. Tests do not send live email. The production build and HTTP endpoint checks are separate from live-provider testing.
+Source validation includes 20 mocked tests covering the shared form contract, fixed recipient, reply-to, invalid input, request size, cross-origin rejection, spam honeypot, missing credentials, provider failures, retry deduplication, and best-effort throttling. Tests do not send live email. The production build and HTTP endpoint checks are separate from live-provider testing.
 
-The code is prepared for direct sending. **Live delivery remains pending until you configure a verified sender and runtime key, deploy V3, and confirm inbox receipt.** No Apple Mail credentials are needed. Existing website-domain setup is a separate step and no DNS record is changed by this package.
+Live V3 provider delivery was checked successfully before source cleanup. Inbox placement and ordinary mailbox sending remain separate checks. A source cleanup is not a production rollout; preserve working variables and review the new commit before deploying it. No Apple Mail credentials are needed, and this package changes no DNS records.
 
 ## References
 

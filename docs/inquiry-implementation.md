@@ -1,11 +1,21 @@
 # Website-sent project inquiries
 
-Replace the current mailto form with a same-origin POST to `/api/inquiries`. The browser remains on the contact page and displays sending, accepted, or failed status. Remove all email-app handoffs from the site, including email address links. Keep `contact@thefoleycollective.com` as the fixed company recipient.
+The contact form submits a same-origin POST to `/api/inquiries/`, stays in the browser, and reports sending, accepted, or failed status. The recipient comes from the shared company address in `lib/content.ts`: `contact@thefoleycollective.com`. The validated customer address is Reply-To, never the provider sender or an arbitrary recipient.
 
-The existing Next.js static export cannot execute a POST endpoint. Run normal Next.js on Vercel by removing `output: "export"`, keeping `distDir: ".next"` and Vercel `outputDirectory: ".next"`. Add a Node route handler and a matching container declaration for optional Manus hosting. No database or login is required.
+## Modules
 
-Use Resend's HTTPS email API with a server-only `RESEND_API_KEY` and verified `INQUIRY_FROM_EMAIL`. Set the customer's validated address as reply-to, not the sender. Validate input on the server, cap request bytes, reject cross-origin browser submissions, use a honeypot, apply best-effort per-instance throttling, and use an idempotency key derived from the request ID and normalized content. Keep user data and credentials out of application logs. Provider acceptance is not proof of inbox delivery.
+- `lib/inquiry.ts`: browser-safe option arrays, field limits, result types, success wording, and server input normalization/validation.
+- `components/inquiry-form.tsx`: uses the shared options/limits; keeps fields on errors, guards concurrent submissions, and reuses a request ID for unchanged retries.
+- `lib/inquiry-server.ts`: named helpers for origin protection, bounded per-instance counters, streamed request parsing, payload construction, and provider delivery.
+- `app/api/inquiries/route.ts`: thin Node.js POST handler, unchanged during cleanup.
+- `tests/inquiry.test.mjs`: strict TypeScript compilation and 20 mocked tests; no real email is sent.
 
-Required folders: `components/inquiry-form.tsx` owns form interaction; `lib/inquiry-server.ts` owns validation and delivery; `app/api/inquiries/route.ts` exposes the POST endpoint; `tests/inquiry.test.mjs` validates behavior with mocked delivery; `docs/website-email-setup.md` explains sender setup and deployment. No real email is sent during automated tests.
+## Request order and boundaries
 
-Account authorization, domain verification, Vercel runtime environment setup, and an owner-approved live test remain required before claiming working live delivery. Existing Apple/iCloud incoming mail DNS records must be preserved.
+Method → origin → JSON content type → best-effort rate limit → request byte limit/parsing → validated fields and honeypot → configured sender/key → Resend delivery. Each failure retains its prior status/message and no-store response. Retry idempotency continues to hash the request ID and the same serialized normalized email payload. No inquiry content or secret is logged.
+
+`RESEND_API_KEY` and `INQUIRY_FROM_EMAIL` remain server-only runtime configuration. Missing configuration fails honestly. A success response means provider acceptance, not inbox placement. The per-instance throttle is not a distributed abuse-protection guarantee.
+
+## Deployment
+
+Normal Next.js server hosting is required; do not enable static export. Keep Next.js `distDir` and Vercel outputDirectory set to `.next`, and retain the compiled-route verification script. No database or login is required. The working production V3 delivered a labeled test according to Resend; see `deployment-status.md`. Cleanup leaves production variables, DNS, and deployment untouched.

@@ -1,6 +1,6 @@
 allowBuilds:
   sharp: true
-  '@tailwindcss/oxide': true
+  "@tailwindcss/oxide": true
 
 minimumReleaseAgeExclude:
   - postcss@8.5.30
