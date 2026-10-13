@@ -13,11 +13,12 @@ pnpm dev
 ```
 
 ```sh
+pnpm check
 pnpm build
 node scripts/verify-vercel-build.mjs
-pnpm typecheck
-node --test tests/inquiry.test.mjs
 ```
+
+`pnpm check` runs formatting checks, strict TypeScript checks, and 20 mocked regression tests. Use `pnpm format` to apply the checked-in formatting conventions. Tests never send real email.
 
 The current V3 uses normal Next.js server hosting. It is **not a static export**: `/api/inquiries/` requires a server. Keep `distDir: ".next"` in `next.config.ts` and `outputDirectory: ".next"` in `vercel.json`. The previously successful V2 output-directory correction is retained. Do not publish the old `out/` folder for V3, since it cannot run the email endpoint.
 
@@ -27,7 +28,7 @@ Deploy the folder containing `package.json`, `vercel.json`, `scripts/`, `app/`, 
 
 Set `NEXT_PUBLIC_SITE_URL` to the approved final HTTPS origin at build time. Configure server-only `RESEND_API_KEY` and `INQUIRY_FROM_EMAIL` as Vercel environment variables for the environments you intend to use, and redeploy after changes. Do not put the API key in a `NEXT_PUBLIC_` variable, source code, a ZIP, or browser code. See `docs/website-email-setup.md` for exact steps.
 
-The owner reported successful V2 deployment on October 12, 2026. V3 source validation is separate from live email delivery. Sending-account authorization, a verified sender, Vercel runtime settings, and a confirmed inbox receipt are required before calling the email form complete.
+On October 12, 2026, the live V3 website, production Vercel variable scopes, verified sending domain, and a live form submission were independently checked. Resend reported the labeled test delivered to `contact@thefoleycollective.com`. This confirms recipient mail-server acceptance, not inbox placement or manual receipt. See `docs/deployment-status.md`. The source cleanup does not change or redeploy that working production version, its variables, or DNS.
 
 For optional Manus publication, the project uses server capability without a database and its root `Dockerfile`; `/api/health` is the unauthenticated health endpoint. Never restore the old plain-static `out` publish configuration for V3.
 
@@ -50,7 +51,8 @@ Hero product concepts are clearly labeled illustrations, not client work or perf
 - `app/`: public pages, SEO metadata, styles, inquiry API, and health endpoint.
 - `components/`: responsive navigation, product showcase, and inquiry UI.
 - `lib/content.ts`: shared marketing copy and displayed contact address.
-- `lib/inquiry-server.ts`: server validation, fixed recipient, and provider delivery.
+- `lib/inquiry.ts`: typed browser-safe inquiry options, field limits, validation, and success wording.
+- `lib/inquiry-server.ts`: server request protection, parsing, throttling, and provider delivery using the shared company recipient.
 - `public/brand/`, `public/fonts/`: supplied web-ready assets and self-hosted fonts.
 - `public/manus-routes.json`: public page routes; APIs are not page routes.
 - `tests/inquiry.test.mjs`: mocked email handling checks.

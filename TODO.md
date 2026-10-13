@@ -27,3 +27,14 @@
 - [ ] Authorize the sending account, verify its sender domain, set runtime secrets in Vercel, and verify an authorized live submission arrives in the company inbox. Until then, distinguish tested source from live delivery.
 
 Source evidence: production build and TypeScript checks passed; 15 mocked delivery tests passed; read-only review found no confirmed defects. Production and public-preview HTTP tests verified no mailto links, preserved icons, same-origin API behavior, cross-origin rejection, and honest 503 failure with no sending credentials. Live provider acceptance and inbox delivery remain unverified.
+
+## Current status and source cleanup — October 12, 2026
+
+Earlier entries describe historical delivery stages, including the retired mailto form, static export, and pending account access. Current V3 supersedes those stages: normal Next.js server hosting, direct submissions, verified Resend sending domain, Production email variables, and a live test reported delivered by Resend. Human inbox visibility and ordinary mailbox sending are separate from provider delivery. Platform checkpoint receipt remains unconfirmed unless separately returned.
+
+- [x] Shared typed inquiry contract: keep every existing option, visible field, limit, and success message while eliminating duplicated browser/server constants.
+- [x] Readable server stages: preserve method/origin/content-type checks, request byte limit, honeypot, best-effort throttle, customer reply-to, fixed company recipient, retry idempotency, private responses, and runtime secret names.
+- [x] Remove unused email-draft and concept-caption styles and consolidate late CSS overrides without altering the existing layout or branding.
+- [x] Add pinned formatting conventions, `pnpm format`, `pnpm format:check`, and `pnpm check`; extend mocked regressions from 15 to 20 and compile the test fixture with strict TypeScript settings.
+- [x] Final production build and focused behavior-equivalence review of the cleaned source. Build and 20 tests passed; 80 old/new handler comparisons matched; effective stylesheet declarations matched at 10 widths; read-only review found no confirmed regressions.
+- [x] Save and package the cleaned source separately from the working Vercel production deployment. Keep live environment settings, DNS, and user repository changes untouched. The complete cleaned source ZIP is packaged from the canonical commit; it is not a Vercel deployment.

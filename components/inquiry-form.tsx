@@ -1,17 +1,25 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { ArrowUpRight, Check } from "lucide-react";
+import {
+  BUDGET_RANGES,
+  INQUIRY_LIMITS,
+  INQUIRY_SUCCESS_MESSAGE,
+  PROJECT_TIMINGS,
+  PROJECT_TYPES,
+  type ProjectType,
+} from "../lib/inquiry";
 
 export function InquiryForm() {
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const [projectType, setProjectType] = useState("Mobile app");
+  const [projectType, setProjectType] = useState<ProjectType>(PROJECT_TYPES[0]);
   const pending = useRef(false);
   const attempt = useRef({ fingerprint: "", requestId: "" });
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (pending.current) return;
     const data = new FormData(e.currentTarget);
@@ -52,9 +60,7 @@ export function InquiryForm() {
         return;
       }
       setSent(true);
-      setStatus(
-        "Your inquiry has been submitted. Thank you—we’ll be in touch using the email address you provided.",
-      );
+      setStatus(INQUIRY_SUCCESS_MESSAGE);
     } catch {
       setStatus(
         "We couldn’t confirm your submission. Please check your connection and try again. Your details are still here.",
@@ -107,7 +113,7 @@ export function InquiryForm() {
             autoComplete="name"
             name="name"
             placeholder="Jamie Taylor"
-            maxLength={100}
+            maxLength={INQUIRY_LIMITS.name}
             required
             disabled={sending}
           />
@@ -119,7 +125,7 @@ export function InquiryForm() {
             type="email"
             name="email"
             placeholder="jamie@company.com"
-            maxLength={254}
+            maxLength={INQUIRY_LIMITS.email}
             required
             disabled={sending}
           />
@@ -130,7 +136,7 @@ export function InquiryForm() {
         <input
           name="company"
           autoComplete="organization"
-          maxLength={120}
+          maxLength={INQUIRY_LIMITS.company}
           placeholder="Your company or new venture"
           disabled={sending}
         />
@@ -138,7 +144,7 @@ export function InquiryForm() {
       <fieldset disabled={sending}>
         <legend>What are you looking to build?</legend>
         <div className="project-type-buttons">
-          {["Mobile app", "Web platform", "MVP", "Not sure yet"].map((type) => (
+          {PROJECT_TYPES.map((type) => (
             <button
               type="button"
               className={projectType === type ? "selected" : ""}
@@ -155,22 +161,26 @@ export function InquiryForm() {
       <div className="form-row">
         <label>
           Budget range
-          <select name="budget" defaultValue="Let’s discuss" disabled={sending}>
-            <option>Let’s discuss</option>
-            <option>Under $10,000</option>
-            <option>$10,000–$25,000</option>
-            <option>$25,000–$50,000</option>
-            <option>$50,000+</option>
+          <select
+            name="budget"
+            defaultValue={BUDGET_RANGES[0]}
+            disabled={sending}
+          >
+            {BUDGET_RANGES.map((budget) => (
+              <option key={budget}>{budget}</option>
+            ))}
           </select>
         </label>
         <label>
           Ideal timing
-          <select name="timing" disabled={sending}>
-            <option>Let’s figure it out</option>
-            <option>As soon as practical</option>
-            <option>Within 3 months</option>
-            <option>3–6 months</option>
-            <option>Just exploring</option>
+          <select
+            name="timing"
+            defaultValue={PROJECT_TIMINGS[0]}
+            disabled={sending}
+          >
+            {PROJECT_TIMINGS.map((timing) => (
+              <option key={timing}>{timing}</option>
+            ))}
           </select>
         </label>
       </div>
@@ -179,8 +189,8 @@ export function InquiryForm() {
         <textarea
           name="message"
           rows={5}
-          minLength={15}
-          maxLength={3000}
+          minLength={INQUIRY_LIMITS.messageMin}
+          maxLength={INQUIRY_LIMITS.messageMax}
           required
           placeholder="What do you want to build? Who is it for? What would it make better?"
           disabled={sending}

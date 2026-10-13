@@ -158,6 +158,11 @@ select:focus {
   display: flex;
   flex-direction: column;
 }
+@media (min-width: 651px) {
+  .mobile-nav {
+    display: none;
+  }
+}
 .mobile-nav a {
   display: flex;
   justify-content: space-between;
@@ -786,14 +791,6 @@ select:focus {
   margin-left: 9px;
   padding: 3px;
 }
-.concept-caption {
-  position: absolute;
-  bottom: 11px;
-  right: 17px;
-  font-size: 5px;
-  letter-spacing: 1px;
-  color: #7d8b74;
-}
 .mvp-note {
   position: absolute;
   top: 63px;
@@ -807,12 +804,20 @@ select:focus {
   z-index: 6;
   border-radius: 5px;
 }
+
+.showcase-disclosure {
+  font-size: 11px;
+  color: #66735d;
+  text-align: center;
+  line-height: 1.6;
+  margin-top: 12px;
+}
 .showcase-tabs {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
-  margin-top: 16px;
+  margin-top: 9px;
 }
 .showcase-tabs button {
   display: flex;
@@ -1419,34 +1424,26 @@ select:focus {
 .form-note a {
   text-decoration: underline;
 }
-.brief-ready {
-  padding: 18px;
-  background: #edf2e6;
-  border-radius: 5px;
-  margin-top: 24px;
+.inquiry-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
-.brief-ready p {
-  font-size: 11px;
+.inquiry-error {
+  padding: 14px 16px;
+  border: 1px solid #dcb3ab;
+  border-radius: 10px;
+  background: #fff4f0;
+  color: #7b3024;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.inquiry-success > p {
   line-height: 1.7;
-  color: #58714c;
-}
-.brief-ready > div {
-  display: flex;
-  gap: 10px;
-  margin: 14px 0;
-}
-.brief-ready button {
-  border: 1px solid #bfceb3;
-  background: white;
-  display: flex;
-  gap: 6px;
-  padding: 8px;
-  font-size: 10px;
-  align-items: center;
-  border-radius: 4px;
-}
-.brief-ready a {
-  text-decoration: underline;
+  margin-bottom: 20px;
 }
 .legal-page {
   max-width: 780px;
@@ -1670,11 +1667,6 @@ select:focus {
   }
   .built-check {
     margin-left: 0;
-  }
-  .concept-caption {
-    font-size: 4px;
-    right: 5px;
-    bottom: 5px;
   }
   .showcase-tabs {
     gap: 1px;
@@ -1948,14 +1940,9 @@ select:focus {
     padding: 12px;
     max-width: none;
   }
-  .concept-caption {
-    font-size: 4px;
-    bottom: 7px;
-    right: 10px;
-  }
   .showcase-tabs {
     gap: 10px;
-    margin-top: 13px;
+    margin-top: 9px;
   }
   .showcase-tabs button {
     font-size: 9px;
@@ -2312,43 +2299,4 @@ select:focus {
     animation: none !important;
     transition: none !important;
   }
-}
-
-.showcase-disclosure {
-  font-size: 11px;
-  color: #66735d;
-  text-align: center;
-  line-height: 1.6;
-  margin-top: 12px;
-}
-.showcase-tabs {
-  margin-top: 9px;
-}
-@media (min-width: 651px) {
-  .mobile-nav {
-    display: none;
-  }
-}
-
-/* Website-sent inquiry states. */
-.inquiry-honeypot {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-.inquiry-error {
-  padding: 14px 16px;
-  border: 1px solid #dcb3ab;
-  border-radius: 10px;
-  background: #fff4f0;
-  color: #7b3024;
-  font-size: 14px;
-  line-height: 1.65;
-}
-.inquiry-success > p {
-  line-height: 1.7;
-  margin-bottom: 20px;
 }
