@@ -1,1 +1,7 @@
-{"routes":[{"path":"/","title":"The Foley Collective — App Development"},{"path":"/contact","title":"Start a project"},{"path":"/privacy","title":"Privacy"}]}
+{
+  "routes": [
+    { "path": "/", "title": "The Foley Collective — App Development" },
+    { "path": "/contact", "title": "Start a project" },
+    { "path": "/privacy", "title": "Privacy" }
+  ]
+}
