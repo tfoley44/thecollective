@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowDown,
+  Play,
   ArrowRight,
   ArrowUpRight,
   Code2,
@@ -12,6 +12,7 @@ import {
   Smartphone,
   Globe2,
 } from "lucide-react";
+import { BrandFilm } from "../components/brand-film";
 import { ProductShowcase } from "../components/product-showcase";
 import { faqs, process, services } from "../lib/content";
 
@@ -46,8 +47,8 @@ export default function HomePage() {
             <Link href="/contact" className="button button-primary">
               Let’s build your app <ArrowUpRight size={17} />
             </Link>
-            <Link href="#services" className="hero-secondary">
-              Explore what we do <ArrowDown size={15} />
+            <Link href="#film" className="hero-secondary">
+              Watch the film (0:30) <Play size={15} />
             </Link>
           </div>
           <div className="hero-footnote">
@@ -73,6 +74,7 @@ export default function HomePage() {
           <Layers size={19} /> MVPs & new ventures
         </div>
       </div>
+      <BrandFilm />
       <section id="services" className="services-section shell section-space">
         <div className="section-heading">
           <div>
