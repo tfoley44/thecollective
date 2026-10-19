@@ -1270,8 +1270,8 @@ select:focus {
 .footer-social ul {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 12px;
+  justify-content: space-evenly;
+  gap: 16px 24px;
   list-style: none;
   padding: 0;
   margin: 0;
