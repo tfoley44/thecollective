@@ -1258,6 +1258,43 @@ select:focus {
 .footer-bottom a:hover {
   color: var(--green);
 }
+.footer-social {
+  padding: 0 0 24px;
+  text-align: center;
+}
+.footer-social > p {
+  margin: 0 0 10px;
+  color: var(--green);
+  font-size: 12px;
+}
+.footer-social ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 16px 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--green);
+  font-size: 12px;
+}
+.footer-social a:hover {
+  background: #e8eee5;
+}
+.footer-social a:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
 .contact-page {
   display: flex;
   gap: 100px;
