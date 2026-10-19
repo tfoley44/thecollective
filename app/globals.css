@@ -1260,6 +1260,7 @@ select:focus {
 }
 .footer-social {
   padding: 0 0 24px;
+  text-align: center;
 }
 .footer-social > p {
   margin: 0 0 10px;
@@ -1269,6 +1270,7 @@ select:focus {
 .footer-social ul {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px 12px;
   list-style: none;
   padding: 0;
